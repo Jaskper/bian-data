@@ -62,7 +62,8 @@ setInterval(function(){
            market.save();
        }
     });
-}, 10*60*1000);
+	console.log('something');
+}, 10*1000);
 
 
 
