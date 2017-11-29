@@ -60,10 +60,10 @@ setInterval(function(){
            var marketObject = {name: nameOfMarket, ticker: marketTicker, timeStamp: timeStamp, contracts: contracts}
            var market = new Market(marketObject);
            market.save();
-	   console.log('something');
        }
     });
-}, 10*1000);
+	console.log('updated: ' + Date.now());
+}, 10*60*1000);
 
 
 
