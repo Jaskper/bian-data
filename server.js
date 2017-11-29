@@ -81,5 +81,5 @@ io.on('connection', function(socket){
 
 
 app.use(express.static(__dirname + '/public'));
-
-http.listen(process.env.port || 80);
+app.listen(80);
+//http.listen(process.env.port || 80);
