@@ -81,5 +81,7 @@ io.on('connection', function(socket){
 
 
 app.use(express.static(__dirname + '/public'));
-app.listen(80);
-//http.listen(process.env.port || 80);
+
+http.listen(3000, function(){
+	console.log('listening on *:3000');
+});
