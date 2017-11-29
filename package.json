@@ -1,0 +1,16 @@
+{
+  "name": "predictit-data",
+  "version": "0.0.0",
+  "description": "Gets data from PredictIt.",
+  "main": "server.js",
+  "repository": "",
+  "author": "Michael Bian",
+  "dependencies": {
+    "express": "4.16.2",
+    "json-size": "^1.0.0",
+    "predict-it": "1.0.3",
+    "q": "1.5.1",
+    "socket.io": "2.0.4",
+    "mongoose": "4.13.4"
+  }
+}
