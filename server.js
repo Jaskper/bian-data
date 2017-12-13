@@ -6,28 +6,29 @@ var express = require('express'),
     Q = require('q'),
     jsonSize = require('json-size'),
     mongoose = require('mongoose');
-    
-mongoose.connect('mongodb://localhost:27017/predictit');
+   
+var options = {
+   user: "admin",
+   pass: "password"
+};
+
+mongoose.connect('mongodb://localhost:27017/predictit/ps?authSource=admin',options);
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
-var marketSchema = mongoose.Schema({
-    name: String,
-    ticker: String,
-    timeStamp: String,
-    contracts: [{
-        nameOfContract: String,
-        lastTrade: Number,
-        buyYes: Number,
-        buyNo: Number,
-        sellYes: Number,
-        sellNo: Number,
-        endDate: String,
-        contractTicker: String
-    }]
-    
-});
-var Market = mongoose.model("Market", marketSchema);
+var contractSchema = mongoose.Schema({
+	nameOfContract: String,
+	contractTicker: String,
+	marketTicker: String,
+	lastTrade: Number,
+	buyYes: Number,
+	buyNo: Number,
+	sellYes: Number,
+	sellNo: Number,
+	timeStamp: String,
+	endDate: String
+})
+var Contract = mongoose.model("Contract", contractSchema);
 
 
 app.get('/', function(req, res){
@@ -38,7 +39,6 @@ setInterval(function(){
     predictIt.all().then(function(data){
        for(var i = 0; i<data.length; i++){
            
-           var nameOfMarket = data[i].Name;
            var marketTicker = data[i].TickerSymbol;
            var timeStamp = data[i].TimeStamp;
            
@@ -52,14 +52,13 @@ setInterval(function(){
                var sellNo = data[i].Contracts[j].BestSellNoCost;
                var lastClose = data[i].Contracts[j].LastClosePrice;
                var contractTicker = data[i].Contracts[j].TickerSymbol;
-               
-               var contract = {nameOfContract: nameOfContract, lastTrade: lastTrade, buyYes: buyYes, buyNo: buyNo, sellYes: sellYes, sellNo: sellNo, lastClose: lastClose, contractTicker: contractTicker};
-               contracts.push(contract);
-           }
-           
-           var marketObject = {name: nameOfMarket, ticker: marketTicker, timeStamp: timeStamp, contracts: contracts}
-           var market = new Market(marketObject);
-           market.save();
+               var endDate = data[i].Contracts[j].DateEnd;
+	   
+	       var contractObject = {nameOfContract: nameOfContract, contractTicker: contractTicker, marketTicker: marketTicker, lastTrade: lastTrade, buyYes: buyYes, buyNo: buyNo, sellYes: sellYes, sellNo: sellNo, timeStamp: timeStamp, endDate: endDate}
+	       var contract = new Contract(contractObject);
+		   contract.save();
+	   }
+
        }
     });
 	console.log('updated: ' + Date.now());
@@ -71,7 +70,7 @@ io.on('connection', function(socket){
     console.log('connection');
     socket.on('refresh_request', function(){
 
-        Market.collection.stats(function(err, results){
+        Contract.collection.stats(function(err, results){
             socket.emit('refresh_fulfill', {count: results.count, bytes: results.storageSize});
         })
 
